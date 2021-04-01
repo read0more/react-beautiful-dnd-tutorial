@@ -2,16 +2,26 @@ import Column from "./Column";
 import initialData from "./initial-data";
 import { DragDropContext } from "react-beautiful-dnd";
 import { useState } from "react";
-import { renderIntoDocument } from "react-dom/test-utils";
 
 function App() {
   const [state, setState] = useState(initialData);
 
   const onDragStart = () => {
     document.body.style.color = "orange";
+    document.body.style.transition = "background-color 0.2s ease";
   };
+
+  const onDragUpdate = (update) => {
+    const { destination } = update;
+    const opacity = destination
+      ? destination.index / Object.keys(state.tasks).length
+      : 0;
+    document.body.style.backgroundColor = `rgba(153, 141, 217, ${opacity})`;
+  };
+
   const onDragEnd = (result) => {
     document.body.style.color = "inherit";
+    document.body.style.transition = "inherit";
     const { destination, source, draggableId } = result;
 
     if (!destination) {
@@ -48,7 +58,11 @@ function App() {
 
   return (
     <div className="App">
-      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+      <DragDropContext
+        onDragStart={onDragStart}
+        onDragUpdate={onDragUpdate}
+        onDragEnd={onDragEnd}
+      >
         {state.columnOrder.map((columnId) => {
           const column = state.columns[columnId];
           const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
