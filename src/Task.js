@@ -40,6 +40,7 @@ const Task = ({ task, index }) => {
             ref={provided.innerRef}
             isDragging={snapshot.isDragging}
             isDragDisabled={isDragDisabled}
+            aria-roledescription="test in Task.js"
           >
             <Handle {...provided.dragHandleProps} />
             {task.content}
