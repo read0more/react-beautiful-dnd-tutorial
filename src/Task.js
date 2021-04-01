@@ -7,7 +7,12 @@ const List = styled.li`
   border-radius: 2px;
   padding: 8px;
   margin-bottom: 8px;
-  background-color: ${(props) => (props.isDragging ? "lightgreen" : "white")};
+  background-color: ${(props) =>
+    props.isDragDisabled
+      ? "lightgrey"
+      : props.isDragging
+      ? "lightgreen"
+      : "white"};
   display: flex;
 `;
 
@@ -19,25 +24,30 @@ const Handle = styled.div`
   margin-right: 8px;
 `;
 
-const Task = ({ task, index }) => (
-  <Draggable draggableId={task.id} index={index}>
-    {(provided, snapshot) => {
-      if (snapshot.draggingOver) {
-        console.log(snapshot);
-      }
+const Task = ({ task, index }) => {
+  const isDragDisabled = task.id === "task-1";
 
-      return (
-        <List
-          {...provided.draggableProps}
-          ref={provided.innerRef}
-          isDragging={snapshot.isDragging}
-        >
-          <Handle {...provided.dragHandleProps} />
-          {task.content}
-        </List>
-      );
-    }}
-  </Draggable>
-);
+  return (
+    <Draggable
+      draggableId={task.id}
+      index={index}
+      isDragDisabled={isDragDisabled}
+    >
+      {(provided, snapshot) => {
+        return (
+          <List
+            {...provided.draggableProps}
+            ref={provided.innerRef}
+            isDragging={snapshot.isDragging}
+            isDragDisabled={isDragDisabled}
+          >
+            <Handle {...provided.dragHandleProps} />
+            {task.content}
+          </List>
+        );
+      }}
+    </Draggable>
+  );
+};
 
 export default Task;
